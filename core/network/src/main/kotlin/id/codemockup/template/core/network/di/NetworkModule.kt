@@ -1,6 +1,15 @@
 package id.codemockup.template.core.network.di
 
 
+import android.content.Context
+import com.chuckerteam.chucker.api.ChuckerCollector
+import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.chuckerteam.chucker.api.RetentionManager
+import dagger.hilt.android.qualifiers.ApplicationContext
+import id.codemockup.template.core.network.DiagnosticsInterceptor
+import id.codemockup.template.core.network.ResponseInterceptor
+import id.codemockup.template.core.network.SentryBreadcrumbInterceptor
+import java.util.concurrent.TimeUnit
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,7 +27,24 @@ import javax.inject.Singleton
 object NetworkModule {
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient = OkHttpClient.Builder().build()
+    fun provideOkHttpClient(
+        @ApplicationContext context: Context,
+        responseInterceptor: ResponseInterceptor,
+    ): OkHttpClient {
+        val chucker = ChuckerInterceptor.Builder(context)
+            .collector(ChuckerCollector(context, showNotification = true, retentionPeriod = RetentionManager.Period.ONE_HOUR))
+            .maxContentLength(250_000L)
+            .redactHeaders("Authorization", "Cookie", "Set-Cookie")
+            .build()
+        return OkHttpClient.Builder()
+            .addInterceptor(responseInterceptor)
+            .addInterceptor(DiagnosticsInterceptor(chucker))
+            .addInterceptor(SentryBreadcrumbInterceptor())
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(60, TimeUnit.SECONDS)
+            .build()
+    }
 
     @Provides
     @Singleton

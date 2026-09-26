@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.template.android.library)
+    alias(libs.plugins.template.android.hilt)
 }
 
 android {
@@ -7,4 +8,6 @@ android {
 }
 
 dependencies {
+    api(libs.coroutines.android)
+    implementation(libs.sentry.android)
 }

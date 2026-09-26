@@ -37,6 +37,19 @@ class PreferencesDataStore @Inject constructor(
         }
     }
 
+    override suspend fun clearSessionIfTokenMatches(expectedToken: String): Boolean {
+        var cleared = false
+        preferences.edit {
+            if (it[TOKEN] == expectedToken) {
+                it.remove(TOKEN)
+                it.remove(USER_ID)
+                it.remove(EMAIL)
+                cleared = true
+            }
+        }
+        return cleared
+    }
+
     private companion object {
         val TOKEN = stringPreferencesKey("session_token")
         val USER_ID = stringPreferencesKey("session_user_id")

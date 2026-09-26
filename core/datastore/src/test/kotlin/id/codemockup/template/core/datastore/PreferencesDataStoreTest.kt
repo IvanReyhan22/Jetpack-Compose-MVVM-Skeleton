@@ -37,6 +37,11 @@ class PreferencesDataStoreTest {
         ))
         try {
             assertEquals(session, restored.session.first())
+            assertFalse(restored.clearSessionIfTokenMatches("older-token"))
+            assertEquals(session, restored.session.first())
+            assertTrue(restored.clearSessionIfTokenMatches("token"))
+            assertFalse(restored.clearSessionIfTokenMatches("token"))
+            restored.saveSession(session)
             restored.clearSession()
             assertNull(restored.session.first())
         } finally { secondJob.cancelAndJoin() }

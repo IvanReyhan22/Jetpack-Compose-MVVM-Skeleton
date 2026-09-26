@@ -12,6 +12,11 @@ internal class FakeDataStore : BaseDataStore {
         if (failWrite) throw IOException("Disk unavailable")
         this.session.value = session
     }
+    override suspend fun clearSessionIfTokenMatches(expectedToken: String): Boolean {
+        if (session.value?.token != expectedToken) return false
+        clearSession()
+        return true
+    }
     override suspend fun clearSession() {
         if (failWrite) throw IOException("Disk unavailable")
         session.value = null

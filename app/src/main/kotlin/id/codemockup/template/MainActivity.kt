@@ -10,6 +10,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
+import id.codemockup.template.core.common.ErrorMessageConstant
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
@@ -33,6 +36,9 @@ class MainActivity : ComponentActivity() {
             TemplateTheme {
                 Surface(Modifier.fillMaxSize()) {
                     val state by viewModel.state.collectAsStateWithLifecycle()
+                    val networkError by viewModel.networkError.collectAsStateWithLifecycle()
+                    val sessionAction by viewModel.sessionAction.collectAsStateWithLifecycle()
+                    val retrying by viewModel.retrying.collectAsStateWithLifecycle()
                     when (val current = state) {
                         MainAppState.Loading -> LoadingScreen()
                         MainAppState.Error -> Column(
@@ -42,7 +48,32 @@ class MainActivity : ComponentActivity() {
                             Text("Could not load session.")
                             TemplateButton("Try again", viewModel::loadSession)
                         }
-                        is MainAppState.Ready -> AppNavHost(current.signedIn)
+                        is MainAppState.Ready -> AppNavHost(
+                            signedIn = current.signedIn,
+                            sessionExpiryId = (sessionAction as? SessionAction.ReturnToLogin)?.id,
+                            onSessionExpiryHandled = viewModel::acknowledgeSessionExpiry,
+                        )
+                    }
+                    if (sessionAction is SessionAction.ClearFailed) {
+                        AlertDialog(
+                            onDismissRequest = {},
+                            title = { Text("Session expired") },
+                            text = { Text(ErrorMessageConstant.SESSION_STORAGE_ERROR) },
+                            confirmButton = {
+                                TextButton(onClick = viewModel::retrySessionExpiry, enabled = !retrying) {
+                                    Text(if (retrying) "Retrying…" else "Try again")
+                                }
+                            },
+                        )
+                    } else networkError?.let { error ->
+                        AlertDialog(
+                            onDismissRequest = { viewModel.acknowledgeNetworkError(error) },
+                            title = { Text("Connection problem") },
+                            text = { Text(error.message) },
+                            confirmButton = {
+                                TextButton(onClick = { viewModel.acknowledgeNetworkError(error) }) { Text("OK") }
+                            },
+                        )
                     }
                 }
             }

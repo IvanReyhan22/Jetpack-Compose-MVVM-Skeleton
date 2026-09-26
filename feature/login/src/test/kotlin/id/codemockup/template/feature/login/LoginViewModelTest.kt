@@ -1,5 +1,6 @@
 package id.codemockup.template.feature.login
 
+import id.codemockup.template.core.common.SessionManager
 import id.codemockup.template.core.data.remote.request.LoginRequest
 import id.codemockup.template.core.data.remote.response.Response
 import id.codemockup.template.core.data.remote.response.auth.LoginResponse
@@ -30,7 +31,7 @@ class LoginViewModelTest {
             return Response(LoginResponse("token", "id", request.email))
         }
     }
-    private fun viewModel() = LoginViewModel(AuthUseCase(LoginUseCase(repository)), store)
+    private fun viewModel() = LoginViewModel(AuthUseCase(LoginUseCase(repository)), store, SessionManager())
     private fun LoginViewModel.fill() {
         onEmailChanged("  demo@example.com  ")
         onPasswordChanged("password123")

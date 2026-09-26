@@ -8,4 +8,5 @@ interface BaseDataStore {
     val session: Flow<UserSession?>
     suspend fun saveSession(session: UserSession)
     suspend fun clearSession()
+    suspend fun clearSessionIfTokenMatches(expectedToken: String): Boolean
 }

@@ -6,7 +6,10 @@ plugins {
 }
 android {
     namespace = "id.codemockup.template"
+    buildFeatures { buildConfig = true }
     defaultConfig {
+        buildConfigField("boolean", "SENTRY_ENABLED", "false")
+        buildConfigField("String", "SENTRY_DSN", "\"\"")
         applicationId = "id.codemockup.template"
         targetSdk = 37
         versionCode = 1
@@ -20,6 +23,7 @@ android {
 dependencies {
     implementation(projects.feature.login)
     implementation(projects.feature.main)
+    implementation(projects.core.common)
     implementation(projects.core.data)
     implementation(projects.core.model)
     implementation(projects.core.datastore)
@@ -36,4 +40,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     debugImplementation(libs.androidx.compose.test.manifest)
+    debugImplementation(projects.core.network)
+    debugImplementation(libs.okhttp)
+    androidTestImplementation(libs.sentry.android)
 }

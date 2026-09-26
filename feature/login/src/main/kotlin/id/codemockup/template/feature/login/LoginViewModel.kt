@@ -4,6 +4,7 @@ package id.codemockup.template.feature.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import id.codemockup.template.core.common.SessionManager
 import id.codemockup.template.core.common.DataState
 import id.codemockup.template.core.common.UiState
 import id.codemockup.template.core.common.validation.LoginValidation
@@ -24,6 +25,7 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val authUseCase: AuthUseCase,
     private val dataStore: BaseDataStore,
+    private val sessionManager: SessionManager,
 ) : ViewModel() {
     private val _state = MutableStateFlow(LoginState())
     val state = _state.asStateFlow()
@@ -62,6 +64,7 @@ class LoginViewModel @Inject constructor(
                     is UiState.Success -> {
                         try {
                             dataStore.saveSession(result.data.toSession())
+                            sessionManager.reset()
                             _state.update { it.copy(password = "", login = DataState(data = result.data)) }
                             effects.send(LoginEffect.SignedIn)
                         } catch (cancelled: CancellationException) {
