@@ -1,34 +1,40 @@
 package id.codemockup.template.core.designsystem.theme
 
 import androidx.compose.material3.Typography
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
+import id.codemockup.template.core.designsystem.R
 
-// Set of Material typography styles to start with
+@OptIn(ExperimentalTextApi::class)
+val OnestFontFamily = FontFamily(
+    (100..900 step 100).map { weight ->
+        Font(
+            resId = R.font.onest,
+            weight = FontWeight(weight),
+            variationSettings = FontVariation.Settings(FontVariation.weight(weight))
+        )
+    }
+)
+
+private val DefaultTypography = Typography()
+
 val Typography = Typography(
-    bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
-    )
-    /* Other default text styles to override
-    titleLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
-        letterSpacing = 0.sp
-    ),
-    labelSmall = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
-    )
-    */
+    displayLarge = DefaultTypography.displayLarge.copy(fontFamily = OnestFontFamily),
+    displayMedium = DefaultTypography.displayMedium.copy(fontFamily = OnestFontFamily),
+    displaySmall = DefaultTypography.displaySmall.copy(fontFamily = OnestFontFamily),
+    headlineLarge = DefaultTypography.headlineLarge.copy(fontFamily = OnestFontFamily),
+    headlineMedium = DefaultTypography.headlineMedium.copy(fontFamily = OnestFontFamily),
+    headlineSmall = DefaultTypography.headlineSmall.copy(fontFamily = OnestFontFamily),
+    titleLarge = DefaultTypography.titleLarge.copy(fontFamily = OnestFontFamily),
+    titleMedium = DefaultTypography.titleMedium.copy(fontFamily = OnestFontFamily),
+    titleSmall = DefaultTypography.titleSmall.copy(fontFamily = OnestFontFamily),
+    bodyLarge = DefaultTypography.bodyLarge.copy(fontFamily = OnestFontFamily),
+    bodyMedium = DefaultTypography.bodyMedium.copy(fontFamily = OnestFontFamily),
+    bodySmall = DefaultTypography.bodySmall.copy(fontFamily = OnestFontFamily),
+    labelLarge = DefaultTypography.labelLarge.copy(fontFamily = OnestFontFamily),
+    labelMedium = DefaultTypography.labelMedium.copy(fontFamily = OnestFontFamily),
+    labelSmall = DefaultTypography.labelSmall.copy(fontFamily = OnestFontFamily)
 )

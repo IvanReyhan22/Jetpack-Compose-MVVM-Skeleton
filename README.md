@@ -40,7 +40,7 @@ core/
   datastore/                      Preferences DataStore session contract and implementation
   domain/                         Repositories, DataSources, use cases, mappers and DI
   extensions/                     Shared navigation extension
-  designsystem/                   Theme, typography, colors and reusable Compose controls
+  designsystem/                   Theme, bundled Onest typography, colors and reusable Compose controls
 feature/
   login/                          Login state, ViewModel, screen, components and navigation
   main/                           Signed-in state, ViewModel, screen, logout and navigation
