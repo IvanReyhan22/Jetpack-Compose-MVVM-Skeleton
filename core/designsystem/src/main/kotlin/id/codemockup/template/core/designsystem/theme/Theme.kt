@@ -1,58 +1,38 @@
 package id.codemockup.template.core.designsystem.theme
 
-import android.app.Activity
-import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
-)
-
-private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+private val AppColorScheme = lightColorScheme(
+    primary = AppColors.primary.onyx, onPrimary = AppColors.neutral.surface,
+    primaryContainer = AppColors.neutral.surfaceSubtle, onPrimaryContainer = AppColors.primary.onyx,
+    inversePrimary = AppColors.secondary.spark,
+    secondary = AppColors.secondary.spark, onSecondary = AppColors.primary.onyx,
+    secondaryContainer = AppColors.secondary.sparkTint, onSecondaryContainer = AppColors.secondary.onSparkTint,
+    tertiary = AppColors.primary.graphite, onTertiary = AppColors.neutral.surface,
+    tertiaryContainer = AppColors.neutral.surfaceSubtle, onTertiaryContainer = AppColors.primary.graphite,
+    background = AppColors.neutral.canvas, onBackground = AppColors.primary.onyx,
+    surface = AppColors.neutral.surface, onSurface = AppColors.primary.onyx,
+    surfaceVariant = AppColors.neutral.surfaceSubtle, onSurfaceVariant = AppColors.neutral.inkSecondary,
+    surfaceTint = AppColors.neutral.surface,
+    inverseSurface = AppColors.primary.graphite, inverseOnSurface = AppColors.neutral.surface,
+    error = AppColors.negative.solid, onError = AppColors.neutral.surface,
+    errorContainer = AppColors.negative.tint, onErrorContainer = AppColors.negative.solid,
+    outline = AppColors.neutral.ash, outlineVariant = AppColors.neutral.platinum,
+    scrim = AppColors.neutral.scrim,
+    surfaceBright = AppColors.neutral.surface, surfaceDim = AppColors.neutral.surfaceSubtle,
+    surfaceContainerLowest = AppColors.neutral.surface, surfaceContainerLow = AppColors.neutral.canvas,
+    surfaceContainer = AppColors.neutral.surface, surfaceContainerHigh = AppColors.neutral.surfaceSubtle,
+    surfaceContainerHighest = AppColors.neutral.surfaceSubtle,
 )
 
 @Composable
-fun TemplateTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
-) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
-
+fun TemplateTheme(content: @Composable () -> Unit) {
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = AppColorScheme,
         typography = Typography,
-        content = content
+        shapes = AppShapes,
+        content = content,
     )
 }

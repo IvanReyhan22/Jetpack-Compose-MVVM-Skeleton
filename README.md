@@ -217,3 +217,19 @@ APKs are under `app/build/outputs/apk/<flavor>/<buildType>/`; release files are 
 ### Rename the project
 
 Update rootProject.name, application ID, namespaces, source packages/imports, test packages, app label, and `template.*` convention plugin IDs together. Update build-logic package paths and documentation. Keep machine-specific SDK paths in local.properties and production secrets out of the repository. Dependencies stay centralized in `gradle/libs.versions.toml`.
+
+## Design foundations
+
+The app uses a fixed light palette from `temp/design_system.html`, with bundled Onest replacing the reference's Inter. Dynamic wallpaper colors and automatic dark mode are disabled. Feature layouts and authentication behavior are unchanged.
+
+Shared tokens live in `core:designsystem/theme`: `AppColors`, `AppTypography`, `AppSpacing`, `AppRadius`, and `AppMotion`. The theme maps these tokens into Material colors, typography, and shapes. Spacing values are 2/4/8/12/16/24/32/48/64 dp; radii are 8/12/16/24 dp plus a pill shape. Motion durations are 140/220/320/480 ms with cubic-bezier (0.2, 0, 0, 1).
+
+Use `AppText(text, style = AppTextStyle.Headline)` for named Onest styles. The available styles are Display, Headline, SectionTitle, Title, TitleSmall, Body, BodySmall, Label, Caption, and Meta. Meta applies locale-aware uppercase; Caption and Meta default to secondary ink. All styles support explicit color overrides and normal Compose text layout options.
+
+`AppBackground(variant = AppBackgroundVariant.FieldGlow)` wraps bounded content; `Modifier.appBackground(...)` paints existing containers. Canvas, FieldGlow, FieldDots, FieldRuled, and FieldGrid are available. Patterns fade out by half the container height. Dots, rules, and grid use the documented 20/28/24 dp mobile spacing. Feature screens do not opt into patterned backgrounds automatically.
+
+Open `FoundationPreviews.kt` for palette, typography, enlarged text, spacing, radius, and background previews. Use `AppMotion.tween<Float>(AppMotion.fast)` with Compose animations to retain system duration scaling.
+
+Spacing uses grouped access: `AppSpacing.sm.sm2/sm4/sm8/sm12`, `AppSpacing.md.md16/md24`, and `AppSpacing.lg.lg32/lg48/lg64`. For example, use `Modifier.padding(AppSpacing.sm.sm8)` or `Arrangement.spacedBy(AppSpacing.md.md16)`. All values remain density-independent `Dp`.
+
+Colors use grouped access: `AppColors.primary.onyx` and `.graphite`; `AppColors.secondary.spark`, `.sparkTint`, and `.onSparkTint`; and `AppColors.neutral` for canvas, surfaces, supporting ink, borders, dark surface colors, background patterns, and scrim. Status groups expose `AppColors.warning.solid/tint`, `AppColors.negative.solid/tint`, and `AppColors.success.solid/tint`. The negative group supplies Material error colors. Palette values and theme behavior are unchanged.

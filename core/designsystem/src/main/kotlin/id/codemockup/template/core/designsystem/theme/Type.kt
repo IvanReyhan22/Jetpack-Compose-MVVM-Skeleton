@@ -1,6 +1,9 @@
 package id.codemockup.template.core.designsystem.theme
 
 import androidx.compose.material3.Typography
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -19,22 +22,33 @@ val OnestFontFamily = FontFamily(
     }
 )
 
-private val DefaultTypography = Typography()
+object AppTypography {
+    private fun style(size: Int, height: Int, weight: Int, tracking: Float = 0f) = TextStyle(
+        fontFamily = OnestFontFamily,
+        fontSize = size.sp,
+        lineHeight = height.sp,
+        fontWeight = FontWeight(weight),
+        letterSpacing = tracking.sp,
+    )
 
-val Typography = Typography(
-    displayLarge = DefaultTypography.displayLarge.copy(fontFamily = OnestFontFamily),
-    displayMedium = DefaultTypography.displayMedium.copy(fontFamily = OnestFontFamily),
-    displaySmall = DefaultTypography.displaySmall.copy(fontFamily = OnestFontFamily),
-    headlineLarge = DefaultTypography.headlineLarge.copy(fontFamily = OnestFontFamily),
-    headlineMedium = DefaultTypography.headlineMedium.copy(fontFamily = OnestFontFamily),
-    headlineSmall = DefaultTypography.headlineSmall.copy(fontFamily = OnestFontFamily),
-    titleLarge = DefaultTypography.titleLarge.copy(fontFamily = OnestFontFamily),
-    titleMedium = DefaultTypography.titleMedium.copy(fontFamily = OnestFontFamily),
-    titleSmall = DefaultTypography.titleSmall.copy(fontFamily = OnestFontFamily),
-    bodyLarge = DefaultTypography.bodyLarge.copy(fontFamily = OnestFontFamily),
-    bodyMedium = DefaultTypography.bodyMedium.copy(fontFamily = OnestFontFamily),
-    bodySmall = DefaultTypography.bodySmall.copy(fontFamily = OnestFontFamily),
-    labelLarge = DefaultTypography.labelLarge.copy(fontFamily = OnestFontFamily),
-    labelMedium = DefaultTypography.labelMedium.copy(fontFamily = OnestFontFamily),
-    labelSmall = DefaultTypography.labelSmall.copy(fontFamily = OnestFontFamily)
-)
+    val display = style(40, 44, 700, -0.8f)
+    val headline = style(32, 38, 700, -0.6f)
+    val sectionTitle = style(24, 30, 700, -0.4f)
+    val title = style(20, 26, 600, -0.2f)
+    val titleSmall = style(16, 24, 600)
+    val body = style(16, 24, 400)
+    val bodySmall = style(14, 20, 400)
+    val label = style(14, 20, 600)
+    val caption = style(12, 16, 400)
+    val meta = style(12, 16, 700).copy(letterSpacing = 0.04.em)
+}
+
+val Typography = with(AppTypography) {
+    Typography(
+        displayLarge = display, displayMedium = display, displaySmall = display,
+        headlineLarge = headline, headlineMedium = headline, headlineSmall = sectionTitle,
+        titleLarge = title, titleMedium = titleSmall, titleSmall = titleSmall,
+        bodyLarge = body, bodyMedium = bodySmall, bodySmall = caption,
+        labelLarge = label, labelMedium = label, labelSmall = meta,
+    )
+}

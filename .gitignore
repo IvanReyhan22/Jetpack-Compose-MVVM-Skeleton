@@ -15,7 +15,7 @@ CLAUDE.md
 .externalNativeBuild
 .cxx
 local.properties
-
+temp
 **/build/
 **/.gradle/
 .kotlin/
