@@ -266,4 +266,17 @@ the existing AppColors groups. Typography uses Onest and AppTypography-derived s
 Interaction colors and extended FAB sizing use AppMotion.fast. Existing foundation
 values remain unchanged. Component previews cover variants and enlarged text.
 
-Component enums live in `core:designsystem/common`. Import `AppButtonVariant`, `AppButtonSize`, `AppFabColor`, `AppFabSize`, `AppIconButtonVariant`, `AppIconButtonShape`, `AppBackgroundVariant`, and `AppTextStyle` from that package.
+Component enums live in category files under `core:designsystem/common/enums`.
+Import button, background, text, input, card, list, navigation, feedback, overlay,
+and icon enums from `id.codemockup.template.core.designsystem.common.enums`.
+
+The remaining reusable controls from `temp/design_system.html` live in `components/inputs`,
+`cards`, `lists`, `navigation`, `feedback`, `overlays`, and `icons`. They cover
+selection and picker triggers, forms and composers, card variants and content cards,
+rows/badges/avatars, tabs and progress, alerts and messages, sheets/dialogs/menus,
+and the reference stroke icons. Parents provide values, callbacks, sizes, and
+content slots; components hold no feature state. `AppBottomBar` accepts four
+destinations and a capture action. `ExtendedPreviews.kt` shows the new families.
+Hermes block examples from the HTML are outside this library. The HTML references
+an unavailable `support.js` for mascot art, so `AppMascot` uses a static Compose
+approximation with caller-selected mood and size.

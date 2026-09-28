@@ -3,20 +3,6 @@ package id.codemockup.template.core.designsystem.common.enums
 import androidx.compose.ui.text.TextStyle
 import id.codemockup.template.core.designsystem.theme.AppTypography
 
-enum class AppButtonVariant { Primary, Spark, Secondary, Tonal, Text, Destructive, DestructiveOutline }
-
-enum class AppButtonSize { Small, Medium, Large }
-
-enum class AppIconButtonVariant { Filled, Spark, Tonal, Outline, Ghost }
-
-enum class AppIconButtonShape { Circle, Square }
-
-enum class AppFabColor { Spark, Onyx }
-
-enum class AppFabSize { Small, Standard, Capture }
-
-enum class AppBackgroundVariant { Canvas, FieldGlow, FieldDots, FieldRuled, FieldGrid }
-
 enum class AppTextStyle(val textStyle: TextStyle) {
     Display(AppTypography.display),
     Headline(AppTypography.headline),
