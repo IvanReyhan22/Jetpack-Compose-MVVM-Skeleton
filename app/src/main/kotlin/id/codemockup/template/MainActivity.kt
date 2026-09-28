@@ -22,8 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dagger.hilt.android.AndroidEntryPoint
-import id.codemockup.template.core.designsystem.components.LoadingScreen
-import id.codemockup.template.core.designsystem.components.TemplateButton
+import id.codemockup.template.core.designsystem.components.feedback.LoadingScreen
+import id.codemockup.template.core.designsystem.components.buttons.AppButton
 import id.codemockup.template.core.designsystem.theme.TemplateTheme
 import id.codemockup.template.navigation.AppNavHost
 
@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
                             verticalArrangement = Arrangement.Center,
                         ) {
                             Text("Could not load session.")
-                            TemplateButton("Try again", viewModel::loadSession)
+                            AppButton("Try again", viewModel::loadSession)
                         }
                         is MainAppState.Ready -> AppNavHost(
                             signedIn = current.signedIn,

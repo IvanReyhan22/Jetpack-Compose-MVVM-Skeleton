@@ -1,4 +1,10 @@
-package id.codemockup.template.core.designsystem.components
+package id.codemockup.template.core.designsystem.components.previews
+
+import id.codemockup.template.core.designsystem.common.enums.AppBackgroundVariant
+import id.codemockup.template.core.designsystem.common.enums.AppTextStyle
+
+import id.codemockup.template.core.designsystem.components.text.*
+import id.codemockup.template.core.designsystem.components.backgrounds.*
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

@@ -25,8 +25,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import id.codemockup.template.core.designsystem.components.TemplateButton
-import id.codemockup.template.core.designsystem.components.TemplateTextField
+import id.codemockup.template.core.designsystem.components.buttons.AppButton
+import id.codemockup.template.core.designsystem.components.inputs.AppTextField
 import id.codemockup.template.core.designsystem.theme.TemplateTheme
 import id.codemockup.template.feature.login.LoginState
 
@@ -45,13 +45,13 @@ fun LoginContent(
     ) {
         Text("Welcome", style = MaterialTheme.typography.headlineLarge)
         Text("Sign in to Template", style = MaterialTheme.typography.bodyLarge)
-        TemplateTextField(
+        AppTextField(
             value = state.email, onValueChange = onEmailChanged, label = "Email",
             modifier = Modifier.fillMaxWidth(), error = state.emailError,
             enabled = !state.login.isLoading,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
         )
-        TemplateTextField(
+        AppTextField(
             value = state.password, onValueChange = onPasswordChanged, label = "Password",
             modifier = Modifier.fillMaxWidth(), error = state.passwordError,
             enabled = !state.login.isLoading,
@@ -66,7 +66,7 @@ fun LoginContent(
         if (state.login.errorMessage.isNotEmpty()) {
             Text(state.login.errorMessage, color = MaterialTheme.colorScheme.error)
         }
-        TemplateButton("Sign in", onLogin, Modifier.fillMaxWidth(), loading = state.login.isLoading)
+        AppButton("Sign in", onLogin, Modifier.fillMaxWidth(), loading = state.login.isLoading)
         Text("Demo account", style = MaterialTheme.typography.titleSmall)
         Text("demo@example.com / password123", style = MaterialTheme.typography.bodyMedium)
     }

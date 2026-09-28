@@ -4,11 +4,14 @@ import androidx.compose.ui.graphics.Color
 
 object AppColors {
     object primary {
+        val pressed = Color(0xFF1A1A1A)
         val onyx = Color(0xFF222526)
         val graphite = Color(0xFF353A3E)
     }
 
     object neutral {
+        val inkDisabled = Color(0xFF8E9496)
+        val surfaceDisabled = Color(0xFFF2F2F1)
         val canvas = Color(0xFFF6F6F5)
         val surface = Color(0xFFFFFFFF)
         val surfaceSubtle = Color(0xFFEEEEED)
@@ -26,6 +29,9 @@ object AppColors {
     }
 
     object secondary {
+        val pressed = Color(0xFFC4E04F)
+        val disabled = Color(0xFFEEF3D9)
+        val onDisabled = Color(0xFF9AA182)
         val spark = Color(0xFFD7F36A)
         val sparkTint = Color(0xFFEEF8C8)
         val onSparkTint = Color(0xFF4E5A1E)
@@ -37,6 +43,8 @@ object AppColors {
     }
 
     object negative {
+        val pressed = Color(0xFF86322B)
+        val onDisabled = Color(0xFFC99A95)
         val solid = Color(0xFFA13E36)
         val tint = Color(0xFFF6E7E5)
     }

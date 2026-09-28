@@ -233,3 +233,37 @@ Open `FoundationPreviews.kt` for palette, typography, enlarged text, spacing, ra
 Spacing uses grouped access: `AppSpacing.sm.sm2/sm4/sm8/sm12`, `AppSpacing.md.md16/md24`, and `AppSpacing.lg.lg32/lg48/lg64`. For example, use `Modifier.padding(AppSpacing.sm.sm8)` or `Arrangement.spacedBy(AppSpacing.md.md16)`. All values remain density-independent `Dp`.
 
 Colors use grouped access: `AppColors.primary.onyx` and `.graphite`; `AppColors.secondary.spark`, `.sparkTint`, and `.onSparkTint`; and `AppColors.neutral` for canvas, surfaces, supporting ink, borders, dark surface colors, background patterns, and scrim. Status groups expose `AppColors.warning.solid/tint`, `AppColors.negative.solid/tint`, and `AppColors.success.solid/tint`. The negative group supplies Material error colors. Palette values and theme behavior are unchanged.
+
+
+### App controls
+
+Shared controls live in `components/buttons`, `components/inputs`, `components/text`, and
+`components/backgrounds`, and `components/feedback`; previews live in `components/previews`.
+
+`AppButton` replaces `TemplateButton`. It supports Primary, Spark, Secondary (outline),
+Tonal, Text, Destructive, and DestructiveOutline variants, plus Small, Medium, and Large
+sizes. Loading retains its label and active colors while blocking clicks; `loadingLabel`
+overrides the label. Leading and trailing icon slots are optional.
+
+`AppIconButton` provides filled, spark, tonal, outline, and ghost actions with circular
+or square visuals and an optional notification dot. Supply an accessible description
+that includes the badge meaning when relevant. `AppFloatingActionButton` supports small,
+standard, and capture sizes with Spark or Onyx colors. `AppExtendedFloatingActionButton`
+uses caller-owned `expanded` state. Controls reserve at least 48 dp for interaction.
+Icons supplied to labeled controls should have null content descriptions to avoid
+repeating the action label. Screen owners handle positioning and action behavior.
+
+`AppTextField` replaces `TemplateTextField`. Labels sit above the input. It supports
+helper/error text, success, read-only and disabled states, icons, suffixes, keyboard
+options/actions, password transformations, and multiline text. Use
+`shape = AppRadius.pill, filled = true` for a search field. Omitted labels require a
+`contentDescription`. `characterLimit` displays a counter; it does not truncate input
+or impose validation. Error takes precedence over success. Read-only input remains
+selectable. Disabled styling takes precedence over interaction styling.
+
+Control geometry lives in `AppControlTokens`; reference pressed/disabled colors extend
+the existing AppColors groups. Typography uses Onest and AppTypography-derived styles.
+Interaction colors and extended FAB sizing use AppMotion.fast. Existing foundation
+values remain unchanged. Component previews cover variants and enlarged text.
+
+Component enums live in `core:designsystem/common`. Import `AppButtonVariant`, `AppButtonSize`, `AppFabColor`, `AppFabSize`, `AppIconButtonVariant`, `AppIconButtonShape`, `AppBackgroundVariant`, and `AppTextStyle` from that package.

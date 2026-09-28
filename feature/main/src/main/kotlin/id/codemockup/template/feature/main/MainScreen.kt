@@ -19,7 +19,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
-import id.codemockup.template.core.designsystem.components.TemplateButton
+import id.codemockup.template.core.designsystem.components.buttons.AppButton
 
 @Composable
 fun MainScreen(navigateToLogin: () -> Unit, viewModel: MainViewModel = hiltViewModel()) {
@@ -40,6 +40,6 @@ fun MainScreen(navigateToLogin: () -> Unit, viewModel: MainViewModel = hiltViewM
         Text("Signed in", style = MaterialTheme.typography.headlineLarge)
         Text(state.email)
         if (state.error.isNotEmpty()) Text(state.error, color = MaterialTheme.colorScheme.error)
-        TemplateButton("Sign out", viewModel::logout, loading = state.isLoading)
+        AppButton("Sign out", viewModel::logout, loading = state.isLoading)
     }
 }

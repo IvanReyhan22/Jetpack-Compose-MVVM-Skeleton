@@ -1,4 +1,4 @@
-package id.codemockup.template.core.designsystem.components
+package id.codemockup.template.core.designsystem.components.feedback
 
 
 import androidx.compose.foundation.layout.Box

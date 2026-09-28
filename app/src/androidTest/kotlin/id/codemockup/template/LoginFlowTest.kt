@@ -3,6 +3,7 @@ package id.codemockup.template
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
@@ -38,11 +39,11 @@ class LoginFlowTest {
             compose.onNodeWithText("Sign in").performClick()
             compose.onNodeWithText("Enter your email.").assertIsDisplayed()
             compose.onNodeWithText("Enter your password.").assertIsDisplayed()
-            compose.onNodeWithText("Email").performTextInput("demo@example.com")
-            compose.onNodeWithText("Password").performTextInput("wrong")
+            compose.onNodeWithContentDescription("Email").performTextInput("demo@example.com")
+            compose.onNodeWithContentDescription("Password").performTextInput("wrong")
             compose.onNodeWithText("Sign in").performClick()
             waitFor("Invalid email or password.")
-            compose.onNodeWithText("Password").performTextReplacement("password123")
+            compose.onNodeWithContentDescription("Password").performTextReplacement("password123")
             compose.onNodeWithText("Sign in").performClick()
             waitFor("Signed in")
             compose.onNodeWithText("demo@example.com").assertIsDisplayed()

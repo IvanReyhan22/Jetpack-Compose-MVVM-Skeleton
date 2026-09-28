@@ -1,4 +1,6 @@
-package id.codemockup.template.core.designsystem.components
+package id.codemockup.template.core.designsystem.components.backgrounds
+
+import id.codemockup.template.core.designsystem.common.enums.AppBackgroundVariant
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -9,16 +11,13 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.unit.dp
 import id.codemockup.template.core.designsystem.theme.AppColors
 
-enum class AppBackgroundVariant { Canvas, FieldGlow, FieldDots, FieldRuled, FieldGrid }
 
-/** Paints a static decorative field behind content, fading out halfway down its bounds. */
 @Composable
 fun AppBackground(
     modifier: Modifier = Modifier,
