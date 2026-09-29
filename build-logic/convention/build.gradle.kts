@@ -13,11 +13,11 @@ dependencies {
 }
 gradlePlugin {
     plugins {
-        register("androidApplication") { id = "template.android.application"; implementationClass = "AndroidApplicationConventionPlugin" }
-        register("androidLibrary") { id = "template.android.library"; implementationClass = "AndroidLibraryConventionPlugin" }
-        register("applicationCompose") { id = "template.android.application.compose"; implementationClass = "AndroidApplicationComposeConventionPlugin" }
-        register("libraryCompose") { id = "template.android.library.compose"; implementationClass = "AndroidLibraryComposeConventionPlugin" }
-        register("hilt") { id = "template.android.hilt"; implementationClass = "AndroidHiltConventionPlugin" }
-        register("feature") { id = "template.android.feature"; implementationClass = "AndroidFeatureConventionPlugin" }
+        register("androidApplication") { id = "ramu.android.application"; implementationClass = "AndroidApplicationConventionPlugin" }
+        register("androidLibrary") { id = "ramu.android.library"; implementationClass = "AndroidLibraryConventionPlugin" }
+        register("applicationCompose") { id = "ramu.android.application.compose"; implementationClass = "AndroidApplicationComposeConventionPlugin" }
+        register("libraryCompose") { id = "ramu.android.library.compose"; implementationClass = "AndroidLibraryComposeConventionPlugin" }
+        register("hilt") { id = "ramu.android.hilt"; implementationClass = "AndroidHiltConventionPlugin" }
+        register("feature") { id = "ramu.android.feature"; implementationClass = "AndroidFeatureConventionPlugin" }
     }
 }

@@ -1,16 +1,16 @@
 plugins {
-    alias(libs.plugins.template.android.application)
-    alias(libs.plugins.template.android.application.compose)
-    alias(libs.plugins.template.android.hilt)
+    alias(libs.plugins.ramu.android.application)
+    alias(libs.plugins.ramu.android.application.compose)
+    alias(libs.plugins.ramu.android.hilt)
     alias(libs.plugins.kotlin.serialization)
 }
 android {
-    namespace = "id.codemockup.template"
+    namespace = "id.codemockup.ramu"
     buildFeatures { buildConfig = true }
     defaultConfig {
         buildConfigField("boolean", "SENTRY_ENABLED", "false")
         buildConfigField("String", "SENTRY_DSN", "\"\"")
-        applicationId = "id.codemockup.template"
+        applicationId = "id.codemockup.ramu"
         targetSdk = 37
         versionCode = 1
         versionName = "1.0"
@@ -27,7 +27,7 @@ dependencies {
     implementation(projects.core.data)
     implementation(projects.core.model)
     implementation(projects.core.datastore)
-    implementation(projects.core.designsystem)
+    implementation(projects.designsystem)
     implementation(projects.core.extensions)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.ktx)

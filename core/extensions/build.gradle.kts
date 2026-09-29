@@ -1,9 +1,9 @@
 plugins {
-    alias(libs.plugins.template.android.library)
+    alias(libs.plugins.ramu.android.library)
 }
 
 android {
-    namespace = "id.codemockup.template.core.extensions"
+    namespace = "id.codemockup.ramu.core.extensions"
 }
 
 dependencies {

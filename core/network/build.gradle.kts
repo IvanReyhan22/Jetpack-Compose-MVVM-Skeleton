@@ -1,10 +1,10 @@
 plugins {
-    alias(libs.plugins.template.android.library)
-    alias(libs.plugins.template.android.hilt)
+    alias(libs.plugins.ramu.android.library)
+    alias(libs.plugins.ramu.android.hilt)
 }
 
 android {
-    namespace = "id.codemockup.template.core.network"
+    namespace = "id.codemockup.ramu.core.network"
     buildFeatures { buildConfig = true }
     productFlavors {
         named("staging") { buildConfigField("String", "BASE_URL", "\"https://staging.example.com/\"") }

@@ -1,4 +1,4 @@
-import id.codemockup.template.buildlogic.library
+import id.codemockup.ramu.buildlogic.library
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 

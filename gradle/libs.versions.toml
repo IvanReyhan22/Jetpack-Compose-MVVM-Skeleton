@@ -65,9 +65,9 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-template-android-application = { id = "template.android.application", version = "unspecified" }
-template-android-library = { id = "template.android.library", version = "unspecified" }
-template-android-application-compose = { id = "template.android.application.compose", version = "unspecified" }
-template-android-library-compose = { id = "template.android.library.compose", version = "unspecified" }
-template-android-hilt = { id = "template.android.hilt", version = "unspecified" }
-template-android-feature = { id = "template.android.feature", version = "unspecified" }
+ramu-android-application = { id = "ramu.android.application", version = "unspecified" }
+ramu-android-library = { id = "ramu.android.library", version = "unspecified" }
+ramu-android-application-compose = { id = "ramu.android.application.compose", version = "unspecified" }
+ramu-android-library-compose = { id = "ramu.android.library.compose", version = "unspecified" }
+ramu-android-hilt = { id = "ramu.android.hilt", version = "unspecified" }
+ramu-android-feature = { id = "ramu.android.feature", version = "unspecified" }

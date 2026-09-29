@@ -1,10 +1,10 @@
 plugins {
-    alias(libs.plugins.template.android.library)
+    alias(libs.plugins.ramu.android.library)
     alias(libs.plugins.kotlin.serialization)
 }
 
 android {
-    namespace = "id.codemockup.template.core.data"
+    namespace = "id.codemockup.ramu.core.data"
 }
 
 dependencies {

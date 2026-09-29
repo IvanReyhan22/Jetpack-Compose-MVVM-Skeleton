@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.template.android.feature)
-    alias(libs.plugins.template.android.library.compose)
+    alias(libs.plugins.ramu.android.feature)
+    alias(libs.plugins.ramu.android.library.compose)
 }
-android { namespace = "id.codemockup.template.feature.login" }
+android { namespace = "id.codemockup.ramu.feature.login" }

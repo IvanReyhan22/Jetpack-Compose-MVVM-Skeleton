@@ -1,4 +1,4 @@
-# Android Template
+# Android Ramu
 
 A runnable Android skeleton following Field Officer v2's **Land feature architecture**: multi-module Compose UI, MVVM, Hilt, typed navigation, and a repository/use-case pipeline. It contains a local demo login and a minimal authenticated screen with persistent session and logout.
 
@@ -22,8 +22,8 @@ The app supports Android API 29 and newer. No backend, private Maven credentials
 
 ```text
 app/
-  src/main/kotlin/id/codemockup/template/
-    TemplateApplication.kt        Hilt application and guarded Sentry setup
+  src/main/kotlin/id/codemockup/ramu/
+    RamuApplication.kt        Hilt application and guarded Sentry setup
     MainActivity.kt               Compose host and global error dialogs
     MainAppState.kt               Initial session state
     MainAppViewModel.kt            Startup, session-expiry handling and retry
@@ -40,10 +40,10 @@ core/
   datastore/                      Preferences DataStore session contract and implementation
   domain/                         Repositories, DataSources, use cases, mappers and DI
   extensions/                     Shared navigation extension
-  designsystem/                   Theme, bundled Onest typography, colors and reusable Compose controls
 feature/
   login/                          Login state, ViewModel, screen, components and navigation
   main/                           Signed-in state, ViewModel, screen, logout and navigation
+designsystem/                     Theme, bundled Onest typography, colors and reusable Compose controls
 build-logic/
   convention/                     Application/library, Compose, Hilt and feature plugins
     src/main/kotlin/              Convention plugin classes
@@ -57,7 +57,7 @@ build.gradle.kts                 Root plugin declarations
 gradle.properties                Shared Gradle/Android settings
 ```
 
-All modules use `src/main/kotlin/id/codemockup/template/...` packages. JVM tests mirror them under `src/test/kotlin`; Android tests live under `src/androidTest/kotlin`. Build outputs and caches (`**/build`, `.gradle`, `.kotlin`) are generated and ignored.
+All modules use `src/main/kotlin/id/codemockup/ramu/...` packages. JVM tests mirror them under `src/test/kotlin`; Android tests live under `src/androidTest/kotlin`. Build outputs and caches (`**/build`, `.gradle`, `.kotlin`) are generated and ignored.
 
 | Module | Main packages and responsibilities | Guide |
 | --- | --- | --- |
@@ -69,7 +69,7 @@ All modules use `src/main/kotlin/id/codemockup/template/...` packages. JVM tests
 | `core:datastore` | `BaseDataStore`, `PreferencesDataStore`, and `di`. | [DataStore](core/datastore/AGENTS.md) |
 | `core:domain` | `repository.auth`, `usecase.auth`, `mapper`, `di`. | [Domain](core/domain/AGENTS.md) |
 | `core:extensions` | Navigation extensions, including session-boundary back-stack clearing. | [Extensions](core/extensions/AGENTS.md) |
-| `core:designsystem` | `theme` and generic `components`. | [Design system](core/designsystem/AGENTS.md) |
+| `designsystem` | `theme` and generic `components`. | [Design system](designsystem/AGENTS.md) |
 | `feature:login` | Screen/state/ViewModel/navigation; `components` contains stateless content and preview. | [Login](feature/login/AGENTS.md) |
 | `feature:main` | Signed-in screen/state/ViewModel; `navigations` registers its typed destination. | [Main](feature/main/AGENTS.md) |
 | `build-logic` | Convention plugins and shared SDK/flavor/dependency settings. | [Build logic](build-logic/AGENTS.md) / [Conventions](build-logic/convention/AGENTS.md) |
@@ -79,7 +79,7 @@ All modules use `src/main/kotlin/id/codemockup/template/...` packages. JVM tests
 ```mermaid
 flowchart TD
     APP[app] --> FEATURES[feature:login / feature:main]
-    APP --> DATA[core:data] & MODEL[core:model] & STORE[core:datastore] & DS[core:designsystem] & EXT[core:extensions] & COMMON[core:common]
+    APP --> DATA[core:data] & MODEL[core:model] & STORE[core:datastore] & DS[designsystem] & EXT[core:extensions] & COMMON[core:common]
     APP -. debug only .-> NETWORK[core:network]
     FEATURES --> DOMAIN[core:domain] & NETWORK & DATA & MODEL & STORE & DS & EXT & COMMON
     DOMAIN --> DATA & MODEL & NETWORK & STORE & COMMON
@@ -91,7 +91,7 @@ flowchart TD
     MODEL --> COMMON
 ```
 
-The feature convention supplies all eight core modules, matching the reference. This does not authorize bypassing layers: screens and ViewModels call use cases and storage, not service/DataSource implementations. Core modules never depend on features; features do not depend on one another or on app.
+The feature convention supplies seven core modules and `designsystem`. This does not authorize bypassing layers: screens and ViewModels call use cases and storage, not service/DataSource implementations. Core modules never depend on features; features do not depend on one another or on app.
 
 `build-logic` is an included Gradle build, not a runtime module. It configures SDK levels, Java 17 bytecode, staging/production flavors, Compose, Hilt/KSP, and feature dependencies. AGP supplies built-in Kotlin compilation; do not add `org.jetbrains.kotlin.android`.
 
@@ -164,7 +164,7 @@ Open Chucker from its notification (when notifications are permitted) or app lau
 
 ## Sentry: configured, disabled
 
-Sentry helpers live in `core:common/utils/sentry`; `TemplateApplication` passes environment/release metadata. Every variant currently sets `SENTRY_ENABLED=false` and `SENTRY_DSN=""` in app BuildConfig. Manifest `io.sentry.auto-init=false` prevents automatic initialization. Disabled helpers are no-ops; the SDK is not manually initialized and sends no events.
+Sentry helpers live in `core:common/utils/sentry`; `RamuApplication` passes environment/release metadata. Every variant currently sets `SENTRY_ENABLED=false` and `SENTRY_DSN=""` in app BuildConfig. Manifest `io.sentry.auto-init=false` prevents automatic initialization. Disabled helpers are no-ops; the SDK is not manually initialized and sends no events.
 
 To enable later, set a valid DSN and `SENTRY_ENABLED=true` for the intended flavor in `app/build.gradle.kts`. Keep auto-init false because initialization remains explicit. The SDK then handles unhandled errors; `SentryLogger.captureException` supports explicit reporting. Expected connection/cancellation failures are filtered. HTTP breadcrumbs contain method, status, and URL without query/fragment/user info; bodies, authorization headers, screenshots, and default PII are omitted. Tracing is disabled. There is no Sentry Gradle upload plugin or duplicate uncaught-exception handler.
 
@@ -172,8 +172,10 @@ To enable later, set a valid DSN and `SENTRY_ENABLED=true` for the intended flav
 
 | Flavor | Application ID |
 | --- | --- |
-| Staging | `id.codemockup.template.staging` |
-| Production | `id.codemockup.template` |
+| Staging | `id.codemockup.ramu.staging` |
+| Production | `id.codemockup.ramu` |
+
+Renaming the application ID creates a separate Android installation. Existing sessions stay with the earlier installation.
 
 ```sh
 # Complete project gate: APKs, JVM tests and lint
@@ -195,14 +197,14 @@ To enable later, set a valid DSN and `SENTRY_ENABLED=true` for the intended flav
 
 Connected tests require a running API 29+ emulator/device. They cover login validation, errors, persisted session, Activity recreation/relaunch, logout/back-stack behavior, global dialogs and background session expiry, plus disabled Sentry. JVM tests cover request delegation, HTTP/transport mapping, bounded response reads/closure, cancellation, capture exclusions, session token checks, event deduplication, storage failures, and retries.
 
-APKs are under `app/build/outputs/apk/<flavor>/<buildType>/`; release files are unsigned and shrinking is disabled. Configure project-specific signing/shrinking when adopting the template. JVM/lint reports live under each module's `build/reports`; device reports under `app/build/reports/androidTests`.
+APKs are under `app/build/outputs/apk/<flavor>/<buildType>/`; release files are unsigned and shrinking is disabled. Configure project-specific signing/shrinking when adopting this project. JVM/lint reports live under each module's `build/reports`; device reports under `app/build/reports/androidTests`.
 
-## Extend or adopt the template
+## Extend or adopt Ramu
 
 ### Add a feature
 
-1. Include `:feature:<name>` in settings and apply `template.android.feature` plus `template.android.library.compose`.
-2. Add `<Name>Screen`, `<Name>State`, `<Name>ViewModel`, and navigation registration. Keep feature-only UI in `components`; generic controls belong in `core:designsystem`.
+1. Include `:feature:<name>` in settings and apply `ramu.android.feature` plus `ramu.android.library.compose`.
+2. Add `<Name>Screen`, `<Name>State`, `<Name>ViewModel`, and navigation registration. Keep feature-only UI in `components`; generic controls belong in `designsystem`.
 3. Add a serializable route in `core:data/remote/routes`, then wire callbacks in app's NavHost.
 4. Add behavior tests and a module AGENTS guide. See [architecture rules](AGENTS.md#adding-a-feature-or-endpoint).
 
@@ -216,13 +218,13 @@ APKs are under `app/build/outputs/apk/<flavor>/<buildType>/`; release files are 
 
 ### Rename the project
 
-Update rootProject.name, application ID, namespaces, source packages/imports, test packages, app label, and `template.*` convention plugin IDs together. Update build-logic package paths and documentation. Keep machine-specific SDK paths in local.properties and production secrets out of the repository. Dependencies stay centralized in `gradle/libs.versions.toml`.
+Update rootProject.name, application ID, namespaces, source packages/imports, test packages, app label, and `ramu.*` convention plugin IDs together. Update build-logic package paths and documentation. Keep machine-specific SDK paths in local.properties and production secrets out of the repository. Dependencies stay centralized in `gradle/libs.versions.toml`.
 
 ## Design foundations
 
 The app uses a fixed light palette from `temp/design_system.html`, with bundled Onest replacing the reference's Inter. Dynamic wallpaper colors and automatic dark mode are disabled. Feature layouts and authentication behavior are unchanged.
 
-Shared tokens live in `core:designsystem/theme`: `AppColors`, `AppTypography`, `AppSpacing`, `AppRadius`, and `AppMotion`. The theme maps these tokens into Material colors, typography, and shapes. Spacing values are 2/4/8/12/16/24/32/48/64 dp; radii are 8/12/16/24 dp plus a pill shape. Motion durations are 140/220/320/480 ms with cubic-bezier (0.2, 0, 0, 1).
+Shared tokens live in `designsystem/theme`: `AppColors`, `AppTypography`, `AppSpacing`, `AppRadius`, and `AppMotion`. The theme maps these tokens into Material colors, typography, and shapes. Spacing values are 2/4/8/12/16/24/32/48/64 dp; radii are 8/12/16/24 dp plus a pill shape. Motion durations are 140/220/320/480 ms with cubic-bezier (0.2, 0, 0, 1).
 
 Use `AppText(text, style = AppTextStyle.Headline)` for named Onest styles. The available styles are Display, Headline, SectionTitle, Title, TitleSmall, Body, BodySmall, Label, Caption, and Meta. Meta applies locale-aware uppercase; Caption and Meta default to secondary ink. All styles support explicit color overrides and normal Compose text layout options.
 
@@ -240,7 +242,7 @@ Colors use grouped access: `AppColors.primary.onyx` and `.graphite`; `AppColors.
 Shared controls live in `components/buttons`, `components/inputs`, `components/text`, and
 `components/backgrounds`, and `components/feedback`; previews live in `components/previews`.
 
-`AppButton` replaces `TemplateButton`. It supports Primary, Spark, Secondary (outline),
+`AppButton` replaces the earlier button component. It supports Primary, Spark, Secondary (outline),
 Tonal, Text, Destructive, and DestructiveOutline variants, plus Small, Medium, and Large
 sizes. Loading retains its label and active colors while blocking clicks; `loadingLabel`
 overrides the label. Leading and trailing icon slots are optional.
@@ -253,7 +255,7 @@ uses caller-owned `expanded` state. Controls reserve at least 48 dp for interact
 Icons supplied to labeled controls should have null content descriptions to avoid
 repeating the action label. Screen owners handle positioning and action behavior.
 
-`AppTextField` replaces `TemplateTextField`. Labels sit above the input. It supports
+`AppTextField` replaces the earlier text field component. Labels sit above the input. It supports
 helper/error text, success, read-only and disabled states, icons, suffixes, keyboard
 options/actions, password transformations, and multiline text. Use
 `shape = AppRadius.pill, filled = true` for a search field. Omitted labels require a
@@ -266,9 +268,9 @@ the existing AppColors groups. Typography uses Onest and AppTypography-derived s
 Interaction colors and extended FAB sizing use AppMotion.fast. Existing foundation
 values remain unchanged. Component previews cover variants and enlarged text.
 
-Component enums live in category files under `core:designsystem/common/enums`.
+Component enums live in category files under `designsystem/common/enums`.
 Import button, background, text, input, card, list, navigation, feedback, overlay,
-and icon enums from `id.codemockup.template.core.designsystem.common.enums`.
+and icon enums from `id.codemockup.ramu.designsystem.common.enums`.
 
 The remaining reusable controls from `temp/design_system.html` live in `components/inputs`,
 `cards`, `lists`, `navigation`, `feedback`, `overlays`, and `icons`. They cover

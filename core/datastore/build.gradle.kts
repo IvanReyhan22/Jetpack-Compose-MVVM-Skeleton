@@ -1,10 +1,10 @@
 plugins {
-    alias(libs.plugins.template.android.library)
-    alias(libs.plugins.template.android.hilt)
+    alias(libs.plugins.ramu.android.library)
+    alias(libs.plugins.ramu.android.hilt)
 }
 
 android {
-    namespace = "id.codemockup.template.core.datastore"
+    namespace = "id.codemockup.ramu.core.datastore"
 }
 
 dependencies {
