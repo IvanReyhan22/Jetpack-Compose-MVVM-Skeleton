@@ -146,22 +146,6 @@ fun AppPageDots(
     }
 }
 
-@Composable
-fun AppTopBar(
-    title: String,
-    modifier: Modifier = Modifier,
-    navigationIcon: @Composable (() -> Unit)? = null,
-    actions: @Composable RowScope.() -> Unit = {},
-) {
-    Surface(modifier = modifier, color = AppColors.neutral.canvas) {
-        Row(Modifier.fillMaxWidth().heightIn(min = 56.dp).padding(horizontal = 6.dp), verticalAlignment = Alignment.CenterVertically) {
-            Box(Modifier.width(44.dp), contentAlignment = Alignment.Center) { navigationIcon?.invoke() }
-            AppText(title, modifier = Modifier.weight(1f), style = AppTextStyle.TitleSmall)
-            Row(content = actions)
-        }
-    }
-}
-
 data class AppBottomDestination(
     val label: String,
     val icon: @Composable () -> Unit,

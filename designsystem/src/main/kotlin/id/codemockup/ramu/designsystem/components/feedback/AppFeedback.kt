@@ -45,8 +45,20 @@ fun AppInlineAlert(
         AppAlertVariant.Warning -> "!"
         AppAlertVariant.Error -> "×"
     }
-    Row(modifier.background(tint, RoundedCornerShape(AppRadius.card)).padding(16.dp), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-        Box(Modifier.size(28.dp).background(if (variant == AppAlertVariant.Hermes) AppColors.secondary.spark else Color.White, RoundedCornerShape(8.dp)), contentAlignment = Alignment.Center) {
+    Row(
+        modifier
+            .background(tint, RoundedCornerShape(AppRadius.card))
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(14.dp)
+    ) {
+        Box(
+            Modifier
+                .size(28.dp)
+                .background(
+                    if (variant == AppAlertVariant.Hermes) AppColors.secondary.spark else Color.White,
+                    RoundedCornerShape(8.dp)
+                ), contentAlignment = Alignment.Center
+        ) {
             AppText(symbol, style = AppTextStyle.Label, color = ink)
         }
         Column(Modifier.weight(1f)) {
@@ -54,7 +66,14 @@ fun AppInlineAlert(
             AppText(message, style = AppTextStyle.BodySmall, color = AppColors.neutral.inkSecondary)
             if (actionLabel != null && onAction != null) {
                 Spacer(Modifier.height(4.dp))
-                AppText(actionLabel, modifier = Modifier.clickable(onClick = onAction).padding(vertical = 8.dp), style = AppTextStyle.Label, color = ink)
+                AppText(
+                    actionLabel,
+                    modifier = Modifier
+                        .clickable(onClick = onAction)
+                        .padding(vertical = 8.dp),
+                    style = AppTextStyle.Label,
+                    color = ink
+                )
             }
         }
     }
@@ -71,13 +90,34 @@ fun AppSnackbarContent(
 ) {
     val background = if (dark) AppColors.primary.onyx else AppColors.neutral.surface
     val ink = if (dark) Color.White else AppColors.primary.onyx
-    Surface(modifier = modifier, shape = RoundedCornerShape(AppRadius.control), color = background) {
-        Row(Modifier.heightIn(min = 52.dp).padding(start = 16.dp, end = 8.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+    Surface(
+        modifier = modifier,
+        shape = RoundedCornerShape(AppRadius.control),
+        color = background
+    ) {
+        Row(
+            Modifier
+                .heightIn(min = 52.dp)
+                .padding(start = 16.dp, end = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
             icon?.invoke()
-            AppText(message, modifier = Modifier.weight(1f), style = AppTextStyle.BodySmall, color = ink)
+            AppText(
+                message,
+                modifier = Modifier.weight(1f),
+                style = AppTextStyle.BodySmall,
+                color = ink
+            )
             if (actionLabel != null && onAction != null) {
-                AppText(actionLabel, modifier = Modifier.clickable(onClick = onAction).padding(12.dp), style = AppTextStyle.Label,
-                    color = if (dark) AppColors.secondary.spark else AppColors.primary.onyx)
+                AppText(
+                    actionLabel,
+                    modifier = Modifier
+                        .clickable(onClick = onAction)
+                        .padding(12.dp),
+                    style = AppTextStyle.Label,
+                    color = if (dark) AppColors.secondary.spark else AppColors.primary.onyx
+                )
             }
         }
     }
@@ -89,7 +129,11 @@ fun AppLoadingIndicator(
     modifier: Modifier = Modifier,
     color: Color = AppColors.primary.onyx,
 ) {
-    Row(modifier, verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+    Row(
+        modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
         CircularProgressIndicator(Modifier.size(20.dp), color = color, strokeWidth = 2.dp)
         AppText(label, style = AppTextStyle.BodySmall, color = AppColors.neutral.inkSecondary)
     }
@@ -100,7 +144,11 @@ fun AppSkeletonLine(
     modifier: Modifier = Modifier,
     height: androidx.compose.ui.unit.Dp = 12.dp,
 ) {
-    Box(modifier.height(height).background(AppColors.neutral.surfaceSubtle, RoundedCornerShape(6.dp)))
+    Box(
+        modifier
+            .height(height)
+            .background(AppColors.neutral.surfaceSubtle, RoundedCornerShape(6.dp))
+    )
 }
 
 @Composable
@@ -111,7 +159,11 @@ fun AppMessageBubble(
     avatar: @Composable (() -> Unit)? = null,
 ) {
     val user = author == AppMessageAuthor.User
-    Row(modifier, horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.Bottom) {
+    Row(
+        modifier,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.Bottom
+    ) {
         if (!user) avatar?.invoke()
         Surface(
             color = if (user) AppColors.primary.onyx else AppColors.neutral.surface,
@@ -121,10 +173,17 @@ fun AppMessageBubble(
                 bottomEnd = if (user) 4.dp else 16.dp,
                 bottomStart = if (user) 16.dp else 4.dp,
             ),
-            border = if (user) null else androidx.compose.foundation.BorderStroke(1.dp, AppColors.neutral.platinum),
+            border = if (user) null else androidx.compose.foundation.BorderStroke(
+                1.dp,
+                AppColors.neutral.platinum
+            ),
         ) {
-            AppText(text, modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-                style = AppTextStyle.BodySmall, color = if (user) Color.White else AppColors.primary.onyx)
+            AppText(
+                text,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                style = AppTextStyle.BodySmall,
+                color = if (user) Color.White else AppColors.primary.onyx
+            )
         }
     }
 }
@@ -144,7 +203,11 @@ fun AppMessageAttachment(
         color = AppColors.neutral.canvas,
         border = androidx.compose.foundation.BorderStroke(1.dp, AppColors.neutral.platinum),
     ) {
-        Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        Row(
+            Modifier.padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
             icon?.invoke()
             Column(Modifier.weight(1f)) {
                 AppText(title, style = AppTextStyle.Label)

@@ -5,6 +5,7 @@ enum class AppButtonVariant { Primary, Spark, Secondary, Tonal, Text, Destructiv
 enum class AppButtonSize { Small, Medium, Large }
 
 enum class AppIconButtonVariant { Filled, Spark, Tonal, Outline, Ghost }
+enum class AppIconButtonSize { Default, Compact }
 
 enum class AppIconButtonShape { Circle, Square }
 

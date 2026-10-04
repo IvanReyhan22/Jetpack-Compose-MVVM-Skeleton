@@ -15,6 +15,23 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 
 class PreferencesDataStoreTest {
+    @Test fun chatSessionReopensAndDemoLogoutPreservesIt() = runTest {
+        val file = temporaryFolder.root.resolve("chat.preferences_pb")
+        val dispatcher = StandardTestDispatcher(testScheduler)
+        val firstJob = SupervisorJob()
+        val preferences = PreferenceDataStoreFactory.create(scope = CoroutineScope(firstJob + dispatcher), produceFile = { file })
+        val session = id.codemockup.ramu.core.model.chat.StoredChatSession("http://host/", "chat-id")
+        try {
+            PreferencesChatSessionStore(preferences).save(session)
+            PreferencesDataStore(preferences).clearSession()
+            assertEquals(session, PreferencesChatSessionStore(preferences).read())
+        } finally { firstJob.cancelAndJoin() }
+        val secondJob = SupervisorJob()
+        val reopened = PreferenceDataStoreFactory.create(scope = CoroutineScope(secondJob + dispatcher), produceFile = { file })
+        try { assertEquals(session, PreferencesChatSessionStore(reopened).read()) }
+        finally { secondJob.cancelAndJoin() }
+    }
+
     @get:Rule val temporaryFolder = TemporaryFolder()
 
     @Test fun savesRestoresAndClearsSessionOnDisk() = runTest {

@@ -12,3 +12,5 @@ include(":app")
 include(":core:common", ":core:data", ":core:model", ":core:network")
 include(":core:datastore", ":core:domain", ":core:extensions", ":designsystem")
 include(":feature:login", ":feature:main")
+
+include(":feature:chat")

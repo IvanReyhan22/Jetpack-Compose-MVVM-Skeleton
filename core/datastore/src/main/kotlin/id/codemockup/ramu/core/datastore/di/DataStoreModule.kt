@@ -19,6 +19,9 @@ private val Context.sessionPreferences by preferencesDataStore(name = "session")
 @Module
 @InstallIn(SingletonComponent::class)
 object DataStoreModule {
+    @Provides @Singleton
+    fun provideChatSessionStore(store: id.codemockup.ramu.core.datastore.PreferencesChatSessionStore): id.codemockup.ramu.core.datastore.ChatSessionStore = store
+
     @Provides
     @Singleton
     fun providePreferences(@ApplicationContext context: Context): DataStore<Preferences> =

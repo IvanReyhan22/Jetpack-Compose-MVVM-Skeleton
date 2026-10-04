@@ -6,7 +6,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
@@ -14,11 +14,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import id.codemockup.ramu.designsystem.common.enums.AppTextStyle
+import id.codemockup.ramu.designsystem.components.buttons.AppButton
 import id.codemockup.ramu.designsystem.components.text.AppText
 import id.codemockup.ramu.designsystem.theme.AppColors
+import id.codemockup.ramu.designsystem.theme.AppControlTokens
+import id.codemockup.ramu.designsystem.theme.AppRadius
+import id.codemockup.ramu.designsystem.theme.AppSpacing
 import id.codemockup.ramu.designsystem.theme.AppTypography
+import id.codemockup.ramu.designsystem.theme.RamuTheme
 
 @Composable
 fun AppComposer(
@@ -28,16 +34,26 @@ fun AppComposer(
     placeholder: String = "Ask or tell Hermes…",
     enabled: Boolean = true,
     maxLines: Int = 4,
+    leading: @Composable (() -> Unit)? = null,
     action: @Composable (() -> Unit)? = null,
 ) {
     Surface(
         modifier = modifier,
-        shape = RoundedCornerShape(24.dp),
+        shape = RoundedCornerShape(AppRadius.card),
         color = AppColors.neutral.surface,
         border = BorderStroke(1.dp, AppColors.neutral.ash),
     ) {
-        Row(Modifier.padding(start = 16.dp, end = 6.dp, top = 6.dp, bottom = 6.dp),
-            verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(
+            Modifier.heightIn(min = AppControlTokens.field).padding(
+                start = if (leading != null) AppSpacing.sm.sm4 else AppSpacing.md.md16,
+                end = AppSpacing.sm.sm4,
+                top = AppSpacing.sm.sm4,
+                bottom = AppSpacing.sm.sm4
+            ),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(AppSpacing.sm.sm8)
+        ) {
+            leading?.invoke()
             BasicTextField(
                 value = value,
                 onValueChange = onValueChange,
@@ -55,6 +71,59 @@ fun AppComposer(
             )
             action?.invoke()
         }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360)
+@Composable
+private fun AppComposerEmptyWithLeadingPreview() {
+    RamuTheme {
+        var value by remember { mutableStateOf("") }
+        AppComposer(
+            value = value,
+            onValueChange = { value = it },
+            leading = { AppText("📎") },
+            action = { AppButton("Send", {}) }
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360)
+@Composable
+private fun AppComposerFilledPreview() {
+    RamuTheme {
+        var value by remember { mutableStateOf("Help me plan the week") }
+        AppComposer(
+            value = value,
+            onValueChange = { value = it },
+            action = { AppButton("Send", {}) }
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360)
+@Composable
+private fun AppComposerFourLinePreview() {
+    RamuTheme {
+        var value by remember { mutableStateOf("Line 1\nLine 2\nLine 3\nLine 4") }
+        AppComposer(
+            value = value,
+            onValueChange = { value = it },
+            maxLines = 4
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360)
+@Composable
+private fun AppComposerDisabledPreview() {
+    RamuTheme {
+        AppComposer(
+            value = "Disabled input",
+            onValueChange = {},
+            enabled = false,
+            action = { AppButton("Send", {}) }
+        )
     }
 }
 

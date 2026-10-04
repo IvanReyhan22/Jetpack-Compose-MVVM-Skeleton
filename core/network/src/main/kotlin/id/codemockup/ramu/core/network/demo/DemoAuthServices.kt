@@ -8,7 +8,6 @@ import id.codemockup.ramu.core.network.services.AuthServices
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 
-/** Local sample only. Replace the DI binding when connecting a real backend. */
 class DemoAuthServices @Inject constructor() : AuthServices {
     override suspend fun login(request: LoginRequest): Response<LoginResponse> {
         delay(600)

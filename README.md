@@ -1,6 +1,6 @@
 # Android Ramu
 
-A runnable Android skeleton following Field Officer v2's **Land feature architecture**: multi-module Compose UI, MVVM, Hilt, typed navigation, and a repository/use-case pipeline. It contains a local demo login and a minimal authenticated screen with persistent session and logout.
+A runnable Android skeleton following Field Officer v2's **Land feature architecture**: multi-module Compose UI, MVVM, Hilt, typed navigation, and a repository/use-case pipeline. It opens directly into Hermes chat with persistent server conversation history. Demo login and logout modules remain available as reusable skeleton features.
 
 Start here for project orientation. [AGENTS.md](AGENTS.md) defines architecture and editing rules; each module guide explains package ownership.
 
@@ -14,9 +14,29 @@ Start here for project orientation. [AGENTS.md](AGENTS.md) defines architecture 
 ./gradlew :app:assembleStagingDebug
 ```
 
-The app supports Android API 29 and newer. No backend, private Maven credentials, or Sentry DSN is required.
+The app supports Android API 29 and newer. Builds need no backend, private Maven credentials, or Sentry DSN. Chat requires a running Hermes API server.
 
-**Demo login:** `demo@example.com` / `password123`. Other credentials return an error after a 600 ms simulated request. Both flavors use the demo service. Passwords are never persisted.
+## Hermes chat setup
+
+1. Copy `app.properties.example` to ignored root `app.properties`.
+2. Set `HERMES_BASE_URL` and `HERMES_API_KEY` to the Hermes API server URL and its `API_SERVER_KEY`.
+3. Enable and start the Hermes API server on the host, then rebuild/install a debug APK.
+
+The default URL, `http://10.0.2.2:8642/`, reaches the Mac from an Android emulator. A physical phone needs the Mac's current LAN address. Include the trailing slash. Property changes require rebuilding. Provider credentials remain on the host.
+
+The key is embedded in debug BuildConfig only. Do not distribute those APKs to untrusted users. Release builds have an empty key and display a configuration error; production provisioning is outside this prototype. Cleartext networking is enabled only in debug.
+
+`feature:chat` uses Sessions API: create an empty session, save its ID and base URL atomically, retrieve server history on launch, and submit synchronous text turns. Returned replacement session IDs are persisted. A changed base URL starts a separate conversation; a missing server session creates a replacement. History displays the latest server page (up to 500 records), filtering tool and hidden timeline records.
+
+Hermes service operations return the project `Response<T>` envelope, matching auth. A Hermes-only Retrofit converter wraps each native server payload without changing its JSON shape, including history’s existing `data` list. `ChatRepository` and injectable `ChatDataSource` are separate files; DataSource only delegates service calls. `OpenChatUseCase` and `SendChatUseCase` each have their own file and own session orchestration, persistence, and mapping. `ChatUseCase` groups them as `openChatUseCase` and `sendChatUseCase`.
+
+The conversation introduction is the first scrollable list item. It shows the first message's timestamp in the device timezone: `TODAY · 9:32 PM`, `YESTERDAY · 9:32 PM`, a weekday within the current Monday-starting week, or `23 Oct · 9:32 PM` for older dates. Hermes timestamps are converted from epoch seconds to milliseconds; new messages use their local submission time. If the first message has no timestamp, the date label is omitted.
+
+The Hermes client has no demo-auth interceptor, Chucker, body logging, or Sentry breadcrumbs. It sends the Hermes bearer key directly, disables redirects and connection retries, and permits five minutes for an agent response. API errors appear inline. Failed sends require an explicit history refresh before another send; they are never resent automatically because delivery may already have completed. Activity recreation keeps the ViewModel and draft. Restart reloads persisted server history, but synchronous requests have no Runs status or cancellation recovery.
+
+The first version supports text messages and a waiting indicator. Attachments, voice, streaming, approvals, Stop, and session switching are outside this version. The host must handle tool approvals through its configured policy; this client cannot answer pending approvals.
+
+Demo login (`demo@example.com` / `password123`) still uses the offline demo service in both flavors, but is not registered in the active app navigation.
 
 ## Project structure
 
@@ -24,14 +44,14 @@ The app supports Android API 29 and newer. No backend, private Maven credentials
 app/
   src/main/kotlin/id/codemockup/ramu/
     RamuApplication.kt        Hilt application and guarded Sentry setup
-    MainActivity.kt               Compose host and global error dialogs
-    MainAppState.kt               Initial session state
-    MainAppViewModel.kt            Startup, session-expiry handling and retry
-    navigation/AppNavHost.kt      Feature graphs and cross-feature transitions
+    MainActivity.kt               Compose host for Hermes chat
+    MainAppState.kt               Legacy demo initial session state
+    MainAppViewModel.kt            Legacy demo session-expiry handling and retry
+    navigation/AppNavHost.kt      Chat launch destination
   src/main/res/                   Icons, app label, window theme and backup rules
   src/debug/kotlin/.../diagnostics/ Debug-only Hilt entry point for device tests
   src/test/kotlin/                App state/session tests
-  src/androidTest/kotlin/         Login and diagnostics integration tests
+  src/androidTest/kotlin/         Chat startup, content, menu/pull-to-refresh and disabled-Sentry tests
 core/
   common/                         State wrappers, validation, error/event managers, Sentry
   model/                          Shared User/UserSession application models
@@ -42,7 +62,8 @@ core/
   extensions/                     Shared navigation extension
 feature/
   login/                          Login state, ViewModel, screen, components and navigation
-  main/                           Signed-in state, ViewModel, screen, logout and navigation
+  main/                           Reusable demo signed-in/logout feature (not launched)
+  chat/                           Hermes screen, state, ViewModel, navigation and appbar menu (ChatMenuButton)
 designsystem/                     Theme, bundled Onest typography, colors and reusable Compose controls
 build-logic/
   convention/                     Application/library, Compose, Hilt and feature plugins
@@ -71,6 +92,7 @@ All modules use `src/main/kotlin/id/codemockup/ramu/...` packages. JVM tests mir
 | `core:extensions` | Navigation extensions, including session-boundary back-stack clearing. | [Extensions](core/extensions/AGENTS.md) |
 | `designsystem` | `theme` and generic `components`. | [Design system](designsystem/AGENTS.md) |
 | `feature:login` | Screen/state/ViewModel/navigation; `components` contains stateless content and preview. | [Login](feature/login/AGENTS.md) |
+| `feature:chat` | Hermes text chat, persistent session history and send state. | [Chat](feature/chat/AGENTS.md) |
 | `feature:main` | Signed-in screen/state/ViewModel; `navigations` registers its typed destination. | [Main](feature/main/AGENTS.md) |
 | `build-logic` | Convention plugins and shared SDK/flavor/dependency settings. | [Build logic](build-logic/AGENTS.md) / [Conventions](build-logic/convention/AGENTS.md) |
 
@@ -78,7 +100,7 @@ All modules use `src/main/kotlin/id/codemockup/ramu/...` packages. JVM tests mir
 
 ```mermaid
 flowchart TD
-    APP[app] --> FEATURES[feature:login / feature:main]
+    APP[app] --> FEATURES[feature:chat / feature:login / feature:main]
     APP --> DATA[core:data] & MODEL[core:model] & STORE[core:datastore] & DS[designsystem] & EXT[core:extensions] & COMMON[core:common]
     APP -. debug only .-> NETWORK[core:network]
     FEATURES --> DOMAIN[core:domain] & NETWORK & DATA & MODEL & STORE & DS & EXT & COMMON
@@ -95,7 +117,7 @@ The feature convention supplies seven core modules and `designsystem`. This does
 
 `build-logic` is an included Gradle build, not a runtime module. It configures SDK levels, Java 17 bytecode, staging/production flavors, Compose, Hilt/KSP, and feature dependencies. AGP supplies built-in Kotlin compilation; do not add `org.jetbrains.kotlin.android`.
 
-## MVVM and login data flow
+## Reusable demo login data flow
 
 ```mermaid
 flowchart LR
@@ -116,11 +138,13 @@ flowchart LR
 
 Repository contracts **and their DataSource implementations live in `core:domain`**, matching LandRepository/LandDataSource. `core:data` owns wire DTOs and typed navigation routes. Use cases convert responses/failures into `UiState`; ViewModels reduce these results into immutable feature state and expose read-only StateFlow. Screens collect with `collectAsStateWithLifecycle`.
 
-Login validates input and prevents duplicate submissions. It saves token/user atomically before emitting the signed-in effect. Logout clears session before navigation. Startup waits for persisted session resolution, preventing a login-screen flash. Passwords remain in memory and clear on success; session files are excluded from backup/transfer.
+Login validates input and prevents duplicate submissions. It saves token/user atomically before emitting the signed-in effect. Logout clears session before navigation. The retained legacy MainAppViewModel resolves demo sessions; it is not used by the chat launch flow. Passwords remain in memory and clear on success; session files are excluded from backup/transfer.
 
-Serializable `Login` and `Main` routes live in `core:data/remote/routes`. Features expose `NavGraphBuilder` registration and `NavController` extensions. App supplies cross-feature callbacks; ViewModels never receive a NavController. Login, logout, and forced expiry clear the previous back stack.
+Serializable `Login` and `Main` routes live in `core:data/remote/routes`. Features expose `NavGraphBuilder` registration and `NavController` extensions. The retained feature APIs support app-supplied cross-feature callbacks and back-stack clearing. Active AppNavHost registers only Chat; ViewModels never receive a NavController.
 
 ## HTTP errors and expired sessions
+
+This section describes the retained demo/backend infrastructure. Hermes uses its separate client and inline chat errors, without demo session-expiry events.
 
 OkHttp request order is `ResponseInterceptor`, `DiagnosticsInterceptor` (Chucker), then `SentryBreadcrumbInterceptor`. Responses return in reverse order, allowing Chucker to observe HTTP failures before the outer interceptor closes/converts them. Connect/read/write timeouts are 60 seconds.
 
@@ -142,12 +166,12 @@ The interceptor removes `@`, reads the current session, and attaches `Authorizat
 | Protected 401 with token | Atomically clear only the matching session, retain an expiry event, then return to login with a notice and cleared back stack. |
 | 5xx | Use nonblank string `message`; otherwise server-error fallback. |
 | Other unsuccessful status | Use nonblank string `message`; otherwise `Request failed (HTTP <code>).` |
-| DNS/connect/timeout | Map to server-unreachable/no-connection/timeout and display one global connection dialog. |
+| DNS/connect/timeout | Map to server-unreachable/no-connection/timeout and publish a pending network event. |
 | TLS failure | Return a trusted-connection error without disabling TLS verification. |
 
 HTTP failures use `ApiException(statusCode, message)`, an IOException subtype. Error parsing reads at most 64 KiB, handles malformed/empty JSON, and closes failed responses. Original transport causes and coroutine cancellation are preserved. The existing use-case pipeline exposes feature errors via `UiState.Error`.
 
-`NetworkErrorManager` and `SessionManager` retain pending state during backgrounding and deduplicate failures. The app acknowledges a network error after dismissal and expiry after navigation. A late 401 cannot delete a newer session: `clearSessionIfTokenMatches` checks inside the same DataStore edit. If clearing fails, a global storage-error dialog offers retry before navigation. Successful login resets old expiry state.
+`NetworkErrorManager` and `SessionManager` retain pending state during backgrounding and deduplicate failures. The retained MainAppViewModel supports acknowledgment and expiry handling, but the chat activity does not collect these legacy events. A late 401 cannot delete a newer session: `clearSessionIfTokenMatches` checks inside the same DataStore edit. If clearing fails, the legacy session manager retains an event for a future authenticated app shell to handle. Successful login resets old expiry state.
 
 ## Chucker
 
@@ -195,7 +219,7 @@ Renaming the application ID creates a separate Android installation. Existing se
   --configuration productionReleaseRuntimeClasspath
 ```
 
-Connected tests require a running API 29+ emulator/device. They cover login validation, errors, persisted session, Activity recreation/relaunch, logout/back-stack behavior, global dialogs and background session expiry, plus disabled Sentry. JVM tests cover request delegation, HTTP/transport mapping, bounded response reads/closure, cancellation, capture exclusions, session token checks, event deduplication, storage failures, and retries.
+Connected tests require a running API 29+ emulator/device. They cover direct chat startup, draft retention across Activity recreation, bubbles, waiting/Send behavior, inline errors, shared controls, and disabled Sentry. These tests need no live Hermes server; validate actual host replies separately. JVM tests cover Hermes request/authentication contracts, history restoration, rotated session IDs, storage reopening, missing-session recovery, draft retention, duplicate-send prevention, ambiguous failures, and cancellation, plus retained demo request delegation, HTTP/transport mapping, bounded response reads/closure, cancellation, capture exclusions, session token checks, event deduplication, storage failures, and retries.
 
 APKs are under `app/build/outputs/apk/<flavor>/<buildType>/`; release files are unsigned and shrinking is disabled. Configure project-specific signing/shrinking when adopting this project. JVM/lint reports live under each module's `build/reports`; device reports under `app/build/reports/androidTests`.
 
@@ -240,7 +264,7 @@ Colors use grouped access: `AppColors.primary.onyx` and `.graphite`; `AppColors.
 ### App controls
 
 Shared controls live in `components/buttons`, `components/inputs`, `components/text`, and
-`components/backgrounds`, and `components/feedback`; previews live in `components/previews`.
+`components/backgrounds`, and `components/feedback` (including `AppPullToRefresh`); previews live in `components/previews`.
 
 `AppButton` replaces the earlier button component. It supports Primary, Spark, Secondary (outline),
 Tonal, Text, Destructive, and DestructiveOutline variants, plus Small, Medium, and Large
@@ -282,3 +306,10 @@ destinations and a capture action. `ExtendedPreviews.kt` shows the new families.
 Hermes block examples from the HTML are outside this library. The HTML references
 an unavailable `support.js` for mascot art, so `AppMascot` uses a static Compose
 approximation with caller-selected mood and size.
+
+`AppBar` (`components/navigation`) is a top bar: required `title`, optional `subtitle`,
+nullable `leading` content, optional `onBack` (shows a back button), `transparent`
+(default false) and a right-end `actions` slot; `AppBarActionButton` builds action icons. `AppMascotTile` (`components/icons`) is a small rounded glyph tile
+used as the Hermes message avatar. `Modifier.appTopGlow()` (`components/backgrounds`)
+draws the spark radial glow behind a screen. `AppComposer` accepts an optional
+`leading` slot before the input.

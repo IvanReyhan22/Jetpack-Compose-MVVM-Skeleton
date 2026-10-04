@@ -11,4 +11,6 @@ dependencies {
     implementation(projects.core.common)
     implementation(projects.core.model)
     implementation(projects.core.extensions)
+    implementation(libs.lottie)
+    implementation(libs.lottie.compose)
 }

@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import id.codemockup.ramu.designsystem.common.action.ActionSurface
+import id.codemockup.ramu.designsystem.common.enums.AppIconButtonSize
 import id.codemockup.ramu.designsystem.theme.*
 
 
@@ -23,6 +24,7 @@ fun AppIconButton(
     contentDescription: String,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    size: AppIconButtonSize = AppIconButtonSize.Default,
     variant: AppIconButtonVariant = AppIconButtonVariant.Tonal,
     shape: AppIconButtonShape = AppIconButtonShape.Circle,
     showBadge: Boolean = false,
@@ -35,14 +37,30 @@ fun AppIconButton(
         AppIconButtonVariant.Outline -> AppButtonVariant.Secondary
         AppIconButtonVariant.Ghost -> AppButtonVariant.Text
     }
-    ActionSurface(onClick, modifier, enabled, buttonVariant,
+    val appSize = when(size){
+        AppIconButtonSize.Default -> AppControlTokens.touchTarget
+        AppIconButtonSize.Compact -> AppControlTokens.compact
+    }
+    ActionSurface(
+        onClick, modifier, enabled, buttonVariant,
         if (shape == AppIconButtonShape.Circle) CircleShape else RoundedCornerShape(AppRadius.control),
-        contentDescription, outlineUsesAsh = variant == AppIconButtonVariant.Outline) {
-        Box(Modifier.size(if (shape == AppIconButtonShape.Circle) AppControlTokens.touchTarget else AppControlTokens.compact),
-            contentAlignment = Alignment.Center) {
-            Box(Modifier.size(AppControlTokens.icon), contentAlignment = Alignment.Center) { icon() }
-            if (showBadge) Box(Modifier.align(Alignment.TopEnd).padding(AppSpacing.sm.sm8)
-                .size(AppControlTokens.badge).background(AppColors.negative.solid, CircleShape))
+        contentDescription, outlineUsesAsh = variant == AppIconButtonVariant.Outline
+    ) {
+        Box(
+            Modifier.size(appSize),
+            contentAlignment = Alignment.Center
+        ) {
+            Box(
+                Modifier.size(AppControlTokens.icon),
+                contentAlignment = Alignment.Center
+            ) { icon() }
+            if (showBadge) Box(
+                Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(AppSpacing.sm.sm8)
+                    .size(AppControlTokens.badge)
+                    .background(AppColors.negative.solid, CircleShape)
+            )
         }
     }
 }
@@ -58,8 +76,18 @@ private fun AppIconButtonPreview() {
             AppIconButtonVariant.entries.forEach { variant ->
                 Row(horizontalArrangement = Arrangement.spacedBy(AppSpacing.sm.sm8)) {
                     AppIconButton({}, "Add", variant = variant, showBadge = true) { AppText("+") }
-                    AppIconButton({}, "More", variant = variant, shape = AppIconButtonShape.Square) { AppText("…") }
-                    AppIconButton({}, "Disabled", variant = variant, enabled = false) { AppText("+") }
+                    AppIconButton(
+                        {},
+                        "More",
+                        variant = variant,
+                        shape = AppIconButtonShape.Square
+                    ) { AppText("…") }
+                    AppIconButton(
+                        {},
+                        "Disabled",
+                        variant = variant,
+                        enabled = false
+                    ) { AppText("+") }
                 }
             }
         }

@@ -50,6 +50,7 @@ internal fun iconVector(name: AppIconName): ImageVector {
         AppIconName.Filter -> "M4,6 H20 M7,12 H17 M10,18 H14"
         AppIconName.Trash -> "M4,7 H20 M9,7 V4 H15 V7 M6,7 L7,20 H17 L18,7"
         AppIconName.Link -> "M10,14 A4,4 0,0 0,16 14 L19,11 A4,4 0,0 0,13 5 L12,6 M14,10 A4,4 0,0 0,8 10 L5,13 A4,4 0,0 0,11 19 L12,18"
+        AppIconName.Refresh -> "M23,4 V10 H17 M20.49,15 A9,9 0,1 1,18.37,5.64 L23,10"
     }
     return ImageVector.Builder(defaultWidth = 24.dp, defaultHeight = 24.dp, viewportWidth = 24f, viewportHeight = 24f)
         .apply {

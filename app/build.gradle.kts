@@ -21,6 +21,7 @@ android {
     buildTypes { release { isMinifyEnabled = false } }
 }
 dependencies {
+    implementation(projects.feature.chat)
     implementation(projects.feature.login)
     implementation(projects.feature.main)
     implementation(projects.core.common)

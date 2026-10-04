@@ -19,3 +19,5 @@ temp
 **/build/
 **/.gradle/
 .kotlin/
+docs
+/app.properties

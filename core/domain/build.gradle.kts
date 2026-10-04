@@ -8,6 +8,7 @@ android {
 }
 
 dependencies {
+    testImplementation(libs.okhttp)
     implementation(projects.core.data)
     implementation(projects.core.model)
     implementation(projects.core.common)

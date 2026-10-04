@@ -87,7 +87,7 @@ private fun NavigationAndIconsPreview() {
         val destinations = listOf(AppIconName.Today, AppIconName.Idea, AppIconName.Schedule, AppIconName.Spaces)
             .map { icon -> AppBottomDestination(icon.name, { AppIcon(icon, null, color = AppColors.neutral.surface) }) }
         Column(Modifier.background(AppColors.neutral.canvas).padding(16.dp), verticalArrangement = Arrangement.spacedBy(20.dp)) {
-            AppTopBar("Gym tracker", navigationIcon = { AppIcon(AppIconName.Back, "Back") })
+            AppBar("Gym tracker", onBack = {})
             AppTabs(listOf(AppTab("Board"), AppTab("Notes"), AppTab("Activity", 4)), selected, { selected = it.coerceAtMost(2) })
             AppTabs(listOf(AppTab("All", 12), AppTab("Captured"), AppTab("Developing")), selected, { selected = it.coerceAtMost(2) }, variant = AppTabsVariant.Pills)
             AppLinearProgress(.25f, Modifier.fillMaxWidth())
